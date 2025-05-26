@@ -4,6 +4,7 @@ import { styles } from './styles'
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
 import { Filter } from '@/components/Filter'
+import { Item } from '@/components/Item'
 
 import { FilterStatus } from '@/types/FilterStatus'
 
@@ -29,6 +30,12 @@ export function Home() {
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
+
+        <Item
+          data={{ status: FilterStatus.DONE, description: 'Banana' }}
+          onStatus={() => console.log('Status alterado com sucesso')}
+          onRemove={() => console.log('Conteúdo removido com sucesso')}
+        />
       </View>
     </View>
   )
