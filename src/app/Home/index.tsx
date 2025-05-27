@@ -37,6 +37,10 @@ export function Home() {
 
     await itemsStorage.add(newItem)
     await itemsByStatus()
+
+    setFilter(FilterStatus.PENDING)
+    Alert.alert('Adicionado', `Adicionado ${description}`)
+    setDescription('')
   }
 
   async function itemsByStatus() {
@@ -46,6 +50,39 @@ export function Home() {
     } catch (error) {
       console.log(error)
       Alert.alert('Error', 'Não foi possível filtrar os items.')
+    }
+  }
+
+  async function handleRemove(id: string) {
+    try {
+      await itemsStorage.remove(id)
+      await itemsByStatus()
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Remover', 'Não foi possível remover o item.')
+    }
+  }
+
+  function handleClear() {
+    Alert.alert('', 'Deseja realmente remover todos os itens?', [
+      {
+        text: 'Não',
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        onPress: () => onClear(),
+      },
+    ])
+  }
+
+  async function onClear() {
+    try {
+      await itemsStorage.clear()
+      setItems([])
+    } catch (error) {
+      console.log(error)
+      Alert.alert('Error', 'Não foi possível remover todos os itens.')
     }
   }
 
@@ -61,6 +98,7 @@ export function Home() {
         <Input
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
+          value={description}
         />
         <Button title="Adicionar" onPress={handleAdd} />
       </View>
@@ -76,7 +114,7 @@ export function Home() {
             />
           ))}
 
-          <TouchableOpacity style={styles.clearButton}>
+          <TouchableOpacity style={styles.clearButton} onPress={handleClear}>
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
@@ -88,7 +126,7 @@ export function Home() {
             <Item
               data={item}
               onStatus={() => console.log('Status alterado com sucesso')}
-              onRemove={() => console.log('Conteúdo removido com sucesso')}
+              onRemove={() => handleRemove(item.id)}
             />
           )}
           showsVerticalScrollIndicator={false}
